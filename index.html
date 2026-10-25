@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TECHFEST — Future in Motion</title>
+<style>
+:root {
+  --site-primary: #8b5cf6;
+  --site-secondary: #08d9d6;
+  --site-background: #070914;
+  --site-on-primary: #ffffff;
+  --site-on-secondary: #041014;
+  --site-on-background: #f5f5ff;
+  --site-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  --bg: #070914;
+  --panel: #101326;
+  --muted: #a2a8c4;
+  --line: rgba(255,255,255,.13);
+  --glow: rgba(139,92,246,.28);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--site-font-body); background: var(--bg); color: var(--site-on-background); overflow-x: hidden; }
+button, a { font: inherit; }
+a { color: inherit; text-decoration: none; }
+#app { background-color: var(--site-background); color: var(--site-on-background); min-height: 100vh; border-radius: 0; overflow: hidden; position: relative; }
+.decor { position: absolute; pointer-events: none; opacity: var(--site-decoration-opacity); }
+.noise { inset: 0; z-index: 1; opacity: calc(var(--site-decoration-opacity) * .08); background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E"); }
+.aurora { width: 50vw; height: 50vw; border-radius: 50%; filter: blur(100px); background: #6028bd; opacity: calc(var(--site-decoration-opacity) * .22); top: -18vw; left: -10vw; }
+.aurora.two { background: #00b8bf; top: 40vw; left: 70vw; opacity: calc(var(--site-decoration-opacity) * .12); }
+header { height: 82px; display: flex; align-items: center; justify-content: space-between; padding: 0 6vw; border-bottom: 1px solid var(--line); position: relative; z-index: 10; backdrop-filter: blur(20px); }
+.brand { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 900; letter-spacing: .18em; }
+.brand-mark { width: 32px; height: 32px; border: 1px solid var(--site-secondary); display: grid; place-items: center; transform: rotate(45deg); color: var(--site-secondary); box-shadow: 0 0 22px rgba(8,217,214,.22); }
+.brand-mark span { transform: rotate(-45deg); font-size: 17px; }
+nav { display: flex; align-items: center; gap: 34px; color: #c7c9dd; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+nav a { transition: color .25s ease; }
+nav a:hover { color: var(--site-secondary); }
+.nav-cta, .btn { border: 0; cursor: pointer; transition: transform .25s, box-shadow .25s, background .25s; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; font-size: 11px; }
+.nav-cta { color: white; padding: 13px 18px; background: var(--site-primary); border-radius: 3px; }
+.nav-cta:hover, .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(139,92,246,.35); }
+.menu-toggle { display:none; background:transparent; color:white; border:1px solid var(--line); padding:9px 12px; }
+.hero { min-height: 710px; padding: 80px 8vw 95px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 20px; position: relative; }
+.hero-copy { position: relative; z-index: 3; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; color: var(--site-secondary); text-transform: uppercase; font-size: 10px; letter-spacing: .22em; font-weight: 800; }
+.dot { width: 7px; height: 7px; background: var(--site-secondary); border-radius: 50%; box-shadow: 0 0 14px var(--site-secondary); animation: blink 1.6s infinite; }
+h1 { font-family: var(--site-font-heading); font-size: clamp(56px, 8.1vw, 118px); line-height: .88; letter-spacing: -.075em; margin: 28px 0 28px; font-weight: 900; }
+h1 .outline { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.72); }
+h1 .accent { color: var(--site-secondary); text-shadow: 0 0 50px rgba(8,217,214,.2); }
+.hero p { max-width: 410px; color: var(--muted); line-height: 1.8; font-size: 14px; }
+.actions { display: flex; align-items: center; gap: 18px; margin-top: 34px; flex-wrap: wrap; }
+.btn { padding: 17px 22px; color: white; background: var(--site-primary); border-radius: 3px; }
+.btn.secondary { background: transparent; border: 1px solid var(--line); }
+.btn.secondary:hover { border-color: var(--site-secondary); box-shadow: 0 0 25px rgba(8,217,214,.1); }
+.hero-meta { display: flex; gap: 30px; margin-top: 50px; }
+.meta strong { display: block; font-size: 23px; letter-spacing: -.04em; }
+.meta span { display: block; margin-top: 5px; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .14em; }
+.scene { height: 510px; position: relative; perspective: 900px; display: grid; place-items: center; isolation: isolate; }
+.orbit { position: absolute; width: min(40vw,440px); height: min(40vw,440px); border: 1px solid rgba(8,217,214,.25); border-radius: 50%; transform: rotateX(67deg) rotateZ(-22deg); animation: orbit 19s linear infinite; }
+.orbit:before,.orbit:after { content:""; position:absolute; width:9px;height:9px;border-radius:50%;background:var(--site-secondary);box-shadow:0 0 22px var(--site-secondary); }
+.orbit:before { top: 18%; left: 14%; }
+.orbit:after { bottom: 15%; right: 11%; background:var(--site-primary); box-shadow:0 0 22px var(--site-primary); }
+.orbit.two { width: min(32vw,350px); height: min(32vw,350px); border-color: rgba(139,92,246,.4); transform: rotateX(67deg) rotateZ(35deg); animation-direction: reverse; animation-duration: 14s; }
+.core-wrap { position: relative; transform-style: preserve-3d; animation: float 5s ease-in-out infinite; }
+.core { width: 230px; height: 230px; position: relative; transform-style: preserve-3d; transform: rotateX(-23deg) rotateY(-35deg); }
+.face { position: absolute; inset: 0; border: 1px solid rgba(255,255,255,.55); background: linear-gradient(135deg,rgba(139,92,246,.75),rgba(8,217,214,.16)); backdrop-filter: blur(5px); box-shadow: inset 0 0 35px rgba(255,255,255,.12), 0 0 60px rgba(139,92,246,.2); }
+.face.front { transform: translateZ(115px); display:grid;place-items:center; }
+.face.back { transform: rotateY(180deg) translateZ(115px); }
+.face.right { transform: rotateY(90deg) translateZ(115px); background:rgba(8,217,214,.12); }
+.face.left { transform: rotateY(-90deg) translateZ(115px); background:rgba(139,92,246,.2); }
+.face.top { transform: rotateX(90deg) translateZ(115px); background:rgba(255,255,255,.08); }
+.face.bottom { transform: rotateX(-90deg) translateZ(115px); background:rgba(8,217,214,.08); }
+.core-symbol { font-size: 74px; color: white; text-shadow: 0 0 30px var(--site-secondary); font-weight: 200; }
+.hud { position: absolute; font-size: 9px; color: var(--site-secondary); letter-spacing: .15em; text-transform: uppercase; }
+.hud.a { top: 16%; right: 4%; }
+.hud.b { bottom: 17%; left: 2%; }
+.hud.c { top: 26%; left: 3%; color: #bca7ff; }
+.crosshair { position:absolute; width: 28px; height:28px; border:1px solid rgba(8,217,214,.65); }
+.crosshair:before,.crosshair:after { content:"";position:absolute;background:var(--site-secondary); }
+.crosshair:before { width:38px;height:1px;left:-6px;top:13px; }
+.crosshair:after { height:38px;width:1px;top:-6px;left:13px; }
+.crosshair.one { top: 9%; right: 19%; }
+.crosshair.two { bottom: 10%; right: 24%; transform:scale(.6); }
+.ticker { display:flex; overflow:hidden; white-space:nowrap; background:var(--site-secondary); color:#071017; transform:rotate(-1deg) scale(1.02); padding:15px 0; font-weight:900; letter-spacing:.13em; font-size:11px; position:relative; z-index:3; }
+.ticker-track { display:flex; gap:28px; animation: ticker 28s linear infinite; flex-shrink:0; }
+.ticker span { display:flex;align-items:center;gap:28px; }
+.ticker b { font-size:17px; }
+section.content { padding: 115px 8vw; position:relative; z-index:2; }
+.section-head { display:flex; align-items:end; justify-content:space-between; gap:25px; margin-bottom:44px; }
+.kicker { color:var(--site-secondary); text-transform:uppercase; font-size:10px; letter-spacing:.2em; font-weight:800; }
+h2 { font-size:clamp(34px,5vw,62px); letter-spacing:-.06em; line-height:1; margin:15px 0 0; }
+.section-head p { color:var(--muted); max-width:320px; line-height:1.7; font-size:13px; }
+.events { display:grid; grid-template-columns:repeat(3,1fr); gap:17px; }
+.event-card { min-height:315px; border:1px solid var(--line); background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.012)); padding:27px; position:relative; overflow:hidden; transform-style:preserve-3d; transition:border-color .3s,background .3s; }
+.event-card:hover { border-color:rgba(8,217,214,.65); background:linear-gradient(145deg,rgba(8,217,214,.09),rgba(139,92,246,.07)); }
+.card-number { color:#666b8b; font-size:11px; letter-spacing:.12em; }
+.event-icon { margin:34px 0 24px; width:55px;height:55px;display:grid;place-items:center;border:1px solid rgba(8,217,214,.4); color:var(--site-secondary); font-size:24px; transform:rotate(-8deg); transition:transform .35s; }
+.event-card:hover .event-icon { transform:rotate(0) scale(1.12); }
+.event-card h3 { font-size:21px; letter-spacing:-.04em; margin:0 0 11px; }
+.event-card p { font-size:12px; color:var(--muted); line-height:1.7; max-width:280px; }
+.card-arrow { position:absolute; bottom:27px; right:27px; font-size:22px; color:var(--site-secondary); }
+.experience { display:grid; grid-template-columns:.85fr 1.15fr; gap:7vw; align-items:center; }
+.experience-art { min-height:420px; position:relative; border:1px solid var(--line); background:radial-gradient(circle at 50% 50%,rgba(139,92,246,.24),transparent 50%),linear-gradient(135deg,#101326,#080a15); display:grid;place-items:center; overflow:hidden; }
+.ring { width:270px;height:270px;border:1px solid rgba(8,217,214,.6);border-radius:50%;position:absolute; transform:rotateX(67deg) rotateZ(20deg); }
+.ring.r2 { width:220px;height:220px;border-color:rgba(139,92,246,.8);transform:rotateX(67deg) rotateZ(-35deg); }
+.ring.r3 { width:165px;height:165px;border-color:rgba(255,255,255,.35);transform:rotateX(67deg) rotateZ(70deg); }
+.art-core { width:90px;height:90px;background:linear-gradient(135deg,var(--site-primary),var(--site-secondary));clip-path:polygon(50% 0,100% 25%,85% 80%,50% 100%,15% 80%,0 25%);box-shadow:0 0 90px var(--site-primary);animation:float 4s ease-in-out infinite; }
+.experience-copy p { color:var(--muted); font-size:14px; line-height:1.9; max-width:460px; }
+.feature-list { list-style:none; padding:0; margin:28px 0; }
+.feature-list li { border-bottom:1px solid var(--line); padding:16px 0; display:flex; justify-content:space-between; font-size:12px; color:#d8d9e9; }
+.feature-list li span { color:var(--site-secondary); }
+.countdown { border:1px solid var(--line); padding:50px; display:flex; align-items:center; justify-content:space-between; gap:30px; background:linear-gradient(105deg,rgba(139,92,246,.16),rgba(8,217,214,.045)); }
+.countdown h2 { max-width:450px; }
+.timer { display:flex; gap:18px; text-align:center; }
+.time-unit strong { display:block; font-size:38px; letter-spacing:-.07em; }
+.time-unit span { color:var(--muted); font-size:9px; letter-spacing:.14em; }
+footer { border-top:1px solid var(--line); padding:32px 8vw; display:flex; justify-content:space-between; gap:20px; color:var(--muted); font-size:10px; letter-spacing:.1em; text-transform:uppercase; position:relative; z-index:2; }
+.reveal { opacity:0; transform:translateY(32px); transition:opacity .75s ease,transform .75s cubic-bezier(.2,.75,.25,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+@keyframes orbit { to { transform:rotateX(67deg) rotateZ(338deg); } }
+@keyframes float { 0%,100% { transform:translateY(0) rotateX(-23deg) rotateY(-35deg); } 50% { transform:translateY(-14px) rotateX(-18deg) rotateY(-25deg); } }
+@keyframes ticker { to { transform:translateX(-100%); } }
+@keyframes blink { 50% { opacity:.25; } }
+@media(max-width:800px) {
+ header { padding:0 5vw; height:72px; }
+ nav { display:none; position:absolute; top:71px; left:0; right:0; padding:22px 5vw; background:#0b0e1d; flex-direction:column; align-items:flex-start; gap:22px; border-bottom:1px solid var(--line); }
+ nav.open { display:flex; }
+ .menu-toggle { display:block; }
+ .hero { grid-template-columns:1fr; padding:65px 7vw 50px; min-height:auto; }
+ .scene { height:390px; grid-row:1; }
+ .core { transform:scale(.75) rotateX(-23deg) rotateY(-35deg); }
+ .orbit { width:310px;height:310px; }
+ .orbit.two { width:245px;height:245px; }
+ .hero-copy { margin-top:15px; }
+ h1 { font-size:clamp(58px,15vw,95px); }
+ .hero-meta { margin-top:34px; }
+ section.content { padding:80px 7vw; }
+ .section-head { display:block; }
+ .section-head p { margin-top:22px; }
+ .events { grid-template-columns:1fr; }
+ .event-card { min-height:270px; }
+ .experience { grid-template-columns:1fr; }
+ .experience-art { min-height:330px; }
+ .countdown { padding:32px 25px; display:block; }
+ .timer { margin-top:35px; justify-content:space-between; gap:8px; }
+ .time-unit strong { font-size:29px; }
+ footer { flex-direction:column; padding:28px 7vw; }
+}
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } .reveal { opacity:1; transform:none; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="decor aurora"></div><div class="decor aurora two"></div><div class="decor noise"></div>
+  <header>
+    <a class="brand" href="#top" aria-label="Techfest home"><span class="brand-mark"><span>✳</span></span><span>TECHFEST<span style="color:var(--site-secondary)">.</span></span></a>
+    <nav id="nav">
+      <a href="#events">Experiences</a><a href="#about">The vision</a><a href="#register">Get involved</a>
+      <a href="#register" class="nav-cta">Enter the future ↗</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation">☰</button>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="dot"></span> A new dimension of innovation</div>
+        <h1>BUILD<br><span class="outline">WHAT'S</span><br><span class="accent">NEXT.</span></h1>
+        <p>One pulse. A thousand possibilities. Step into a playground where technology meets imagination and the future is yours to shape.</p>
+        <div class="actions"><a class="btn" href="#events">Explore the universe ↗</a><a class="btn secondary" href="#about">Discover Techfest</a></div>
+        <div class="hero-meta"><div class="meta"><strong>03<span style="color:var(--site-secondary)">D</span></strong><span>Ideas in motion</span></div><div class="meta"><strong>∞</strong><span>Ways to create</span></div><div class="meta"><strong>01</strong><span>Shared future</span></div></div>
+      </div>
+      <div class="scene" id="scene" aria-label="Interactive floating 3D geometric object">
+        <div class="orbit"></div><div class="orbit two"></div><div class="crosshair one"></div><div class="crosshair two"></div>
+        <div class="hud a">Core system // 001</div><div class="hud b">Drag to explore <span style="color:white">↗</span></div><div class="hud c">Future is a choice</div>
+        <div class="core-wrap" id="coreWrap"><div class="core"><div class="face front"><span class="core-symbol">✳</span></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div></div>
+      </div>
+    </section>
+    <div class="ticker" aria-label="Techfest themes"><div class="ticker-track"><span>ENGINEER THE IMPOSSIBLE <b>✳</b> DESIGN TOMORROW <b>✳</b> HUMAN × MACHINE <b>✳</b> IDEAS INTO ORBIT <b>✳</b></span><span>ENGINEER THE IMPOSSIBLE <b>✳</b> DESIGN TOMORROW <b>✳</b> HUMAN × MACHINE <b>✳</b> IDEAS INTO ORBIT <b>✳</b></span></div></div>
+    <section class="content" id="events">
+      <div class="section-head reveal"><div><div class="kicker">01 / Choose your dimension</div><h2>PLAY. BUILD. <span style="color:var(--site-secondary)">BREAKTHROUGH.</span></h2></div><p>Curiosity is the only entry requirement. Pick a portal and see where your ideas take you.</p></div>
+      <div class="events">
+        <article class="event-card reveal"><div class="card-number">EXPERIENCE / 001</div><div class="event-icon">⌘</div><h3>Future Labs</h3><p>Prototype bold ideas, experiment with emerging tech, and turn impossible into a working demo.</p><span class="card-arrow">↗</span></article>
+        <article class="event-card reveal"><div class="card-number">EXPERIENCE / 002</div><div class="event-icon">⌬</div><h3>Cyber Arena</h3><p>Test your logic, strategy, and creative problem-solving in challenges built for curious minds.</p><span class="card-arrow">↗</span></article>
+        <article class="event-card reveal"><div class="card-number">EXPERIENCE / 003</div><div class="event-icon">◈</div><h3>Beyond Reality</h3><p>Explore immersive worlds where digital experiences, design, and imagination collide.</p><span class="card-arrow">↗</span></article>
+      </div>
+    </section>
+    <section class="content experience" id="about">
+      <div class="experience-art reveal"><div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><div class="art-core"></div><div class="hud" style="bottom:22px;left:24px">Signal found // 98.4%</div></div>
+      <div class="experience-copy reveal"><div class="kicker">02 / Not just an event</div><h2>A MEETING POINT FOR THE <span style="color:var(--site-secondary)">UNIMAGINED.</span></h2><p>Techfest is more than a showcase of technology. It's a collision of perspectives — a place to learn from each other, take creative risks, and leave with a bigger idea of what's possible.</p><ul class="feature-list"><li>Ideas without boundaries <span>↗</span></li><li>Build with people who challenge you <span>↗</span></li><li>Leave inspired. Return unstoppable. <span>↗</span></li></ul><a href="#register" class="btn secondary">Find your next move ↗</a></div>
+    </section>
+    <section class="content" id="register">
+      <div class="countdown reveal"><div><div class="kicker">03 / Your future is calling</div><h2>DON'T WATCH<br>THE FUTURE. <span style="color:var(--site-secondary)">MAKE IT.</span></h2><p style="color:var(--muted);font-size:13px;line-height:1.7">Bring your curiosity. We'll bring the spark.</p></div><div><div class="timer"><div class="time-unit"><strong id="days">--</strong><span>DAYS</span></div><div class="time-unit"><strong id="hours">--</strong><span>HOURS</span></div><div class="time-unit"><strong id="minutes">--</strong><span>MINUTES</span></div></div><a href="mailto:hello@techfest.example?subject=Techfest%20updates" class="btn" style="display:inline-block;margin-top:28px">Get event updates ↗</a></div></div>
+    </section>
+  </main>
+  <footer><a class="brand" href="#top"><span class="brand-mark"><span>✳</span></span><span>TECHFEST.</span></a><span>Curiosity is a superpower.</span><span>Concept website · Made for the next</span></footer>
+</div>
+<script>
+const nav = document.getElementById('nav');
+document.getElementById('menuToggle').addEventListener('click', () => nav.classList.toggle('open'));
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+const scene = document.getElementById('scene');
+const coreWrap = document.getElementById('coreWrap');
+let dragging = false, lastX = 0, lastY = 0, rotX = -23, rotY = -35;
+scene.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; lastY = e.clientY; scene.setPointerCapture(e.pointerId); });
+scene.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  rotY += (e.clientX - lastX) * .65; rotX -= (e.clientY - lastY) * .55;
+  rotX = Math.max(-75, Math.min(75, rotX)); lastX = e.clientX; lastY = e.clientY;
+  coreWrap.style.animation = 'none';
+  coreWrap.querySelector('.core').style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+});
+scene.addEventListener('pointerup', () => { dragging = false; });
+scene.addEventListener('pointercancel', () => { dragging = false; });
+const observer = new IntersectionObserver(entries => entries.forEach(entry => { if(entry.isIntersecting){ entry.target.classList.add('visible'); observer.unobserve(entry.target); } }), {threshold:.13});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll('.event-card').forEach(card => {
+  card.addEventListener('pointermove', e => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = card.getBoundingClientRect(), x = (e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform = `perspective(800px) rotateY(${x*7}deg) rotateX(${-y*7}deg) translateY(-3px)`;
+  });
+  card.addEventListener('pointerleave', () => card.style.transform = '');
+});
+const target = new Date(); target.setDate(target.getDate()+45);
+function tick() {
+ const d = Math.max(0, target - new Date()), day = Math.floor(d/86400000), hr = Math.floor(d%86400000/3600000), min = Math.floor(d%3600000/60000);
+ document.getElementById('days').textContent = String(day).padStart(2,'0');
+ document.getElementById('hours').textContent = String(hr).padStart(2,'0');
+ document.getElementById('minutes').textContent = String(min).padStart(2,'0');
+}
+tick(); setInterval(tick, 60000);
+</script>
+</body>
+</html>
